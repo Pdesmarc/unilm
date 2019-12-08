@@ -125,8 +125,8 @@ class QGEvalCap:
         output = []
         scorers = [
             (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
-            # (Meteor(), "METEOR"),
-            # (Rouge(), "ROUGE_L"),
+            (Meteor(), "METEOR"),
+            (Rouge(), "ROUGE_L"),
             # (Cider(), "CIDEr")
         ]
 
@@ -200,9 +200,9 @@ if __name__ == "__main__":
     parser.add_argument("-out", "--out_file", dest="out_file",
                         default="./output/pred.txt", help="output file to compare")
     parser.add_argument("-src", "--src_file", dest="src_file",
-                        default="./DONNEES/test/test.pa.txt", help="src file")
+                        default="./qg_data/test/test.pa.txt", help="src file")
     parser.add_argument("-tgt", "--tgt_file", dest="tgt_file",
-                        default="./DONNEES/nqg_processed_data/tgt-test.txt", help="target file")
+                        default="./qg_data/nqg_processed_data/tgt-test.txt", help="target file")
     args = parser.parse_args()
 
     print("scores: \n")
