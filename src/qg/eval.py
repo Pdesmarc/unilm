@@ -1,17 +1,17 @@
 #!/usr/bin/env python
 __author__ = 'xinya'
 
-from bleu.bleu import Bleu
-from meteor.meteor import Meteor
-from rouge.rouge import Rouge
-from cider.cider import Cider
+from NLGEval.nlgeval.pycocoevalcap.bleu.bleu import Bleu
+from NLGEval.nlgeval.pycocoevalcap.meteor.meteor import Meteor
+from NLGEval.nlgeval.pycocoevalcap.rouge.rouge import Rouge
+from NLGEval.nlgeval.pycocoevalcap.cider.cider import Cider
 from collections import defaultdict
 from argparse import ArgumentParser
 import string
-
+from importlib import reload
 import sys
+
 reload(sys)
-sys.setdefaultencoding('utf-8')
 
 _tok_dict = {"(": "-lrb-", ")": "-rrb-",
              "[": "-lsb-", "]": "-rsb-",
@@ -138,10 +138,10 @@ class QGEvalCap:
             score, scores = scorer.compute_score(self.gts, self.res)
             if type(method) == list:
                 for sc, scs, m in zip(score, scores, method):
-                    print "%s: %0.5f" % (m, sc)
+                    print("%s: %0.5f" % (m, sc))
                     output.append(sc)
             else:
-                print "%s: %0.5f" % (method, score)
+                print("%s: %0.5f" % (method, score))
                 output.append(score)
         return output
 
@@ -205,5 +205,5 @@ if __name__ == "__main__":
                         default="./qg_data/nqg_processed_data/tgt-test.txt", help="target file")
     args = parser.parse_args()
 
-    print "scores: \n"
+    print("scores: \n")
     eval(args.out_file, args.src_file, args.tgt_file)
