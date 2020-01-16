@@ -1,5 +1,13 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 __author__ = 'xinya'
+
+import os, sys
+#sys.path.append(os.path.dirname(os.path.dirname(os.path.realpath("crotal.py"))))
+
+#sys.path.insert(0,"/home/etienne/Documents/unilm/src/NLGEval/nlgeval/pycocoevalcap/meteor")
+#print("Le work dir de eval_on.py est:",os.getcwd())
+#sys.path.insert(0,"/home/etienne/Documents/unilm/src")
+#print("On a ca en path:",sys.path)
 
 from NLGEval.nlgeval.pycocoevalcap.cider.cider import Cider
 from NLGEval.nlgeval.pycocoevalcap.meteor.meteor import Meteor
@@ -127,7 +135,7 @@ class QGEvalCap:
             (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
             (Meteor(), "METEOR"),
             (Rouge(), "ROUGE_L"),
-            # (Cider(), "CIDEr")
+            (Cider(), "CIDEr")
         ]
 
         # =================================================

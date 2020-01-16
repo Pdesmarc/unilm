@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 
 # Python wrapper for METEOR implementation, by Xinlei Chen
 # Acknowledge Michael Denkowski for the generous discussion and help
@@ -83,12 +83,13 @@ class Meteor:
                 try:
                     scores.append(float(dec(v.strip())))
                 except:
+                    print("NOUS SOMMES PASSES PAR LA:")
                     sys.stderr.write("Error handling value: {}\n".format(v))
                     sys.stderr.write("Decoded value: {}\n".format(dec(v.strip())))
                     sys.stderr.write("eval_line: {}\n".format(eval_line))
                     # You can try uncommenting the next code line to show stderr from the Meteor JAR.
                     # If the Meteor JAR is not writing to stderr, then the line will just hang.
-                    # sys.stderr.write("Error from Meteor:\n{}".format(self.meteor_p.stderr.read()))
+                    sys.stderr.write("Error from Meteor:\n{}".format(self.meteor_p.stderr.read()))
                     raise
             score = float(dec(self.meteor_p.stdout.readline()).strip())
 
@@ -99,7 +100,9 @@ class Meteor:
 
     def _stat(self, hypothesis_str, reference_list):
         # SCORE ||| reference 1 words ||| reference n words ||| hypothesis words
-        hypothesis_str = hypothesis_str.replace('|||', '').replace('  ', ' ')
+        #print("TYPE:", reference_list)
+        reference_list = [x.decode("utf-8") for x in reference_list]
+        hypothesis_str = hypothesis_str.decode("utf-8").replace('|||', '').replace('  ', ' ')
         score_line = ' ||| '.join(('SCORE', ' ||| '.join(reference_list), hypothesis_str))
         self.meteor_p.stdin.write(enc(score_line))
         self.meteor_p.stdin.write(enc('\n'))

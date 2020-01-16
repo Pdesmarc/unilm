@@ -1,5 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 __author__ = 'xinya'
+
+import os
+#print(os.path.abspath(os.path.join(os.getcwd(), os.pardir)))
+#print(os.getcwd())
 
 from NLGEval.nlgeval.pycocoevalcap.bleu.bleu import Bleu
 from NLGEval.nlgeval.pycocoevalcap.meteor.meteor import Meteor
@@ -125,9 +129,9 @@ class QGEvalCap:
         output = []
         scorers = [
             (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
-            # (Meteor(), "METEOR"),
-            # (Rouge(), "ROUGE_L"),
-            # (Cider(), "CIDEr")
+            (Meteor(), "METEOR"),
+            (Rouge(), "ROUGE_L"),
+            (Cider(), "CIDEr")
         ]
 
         # =================================================
@@ -185,12 +189,19 @@ def eval(out_file, src_file, tgt_file, isDIn=False, num_pairs=500):
     gts = defaultdict(lambda: [])
 
     for pair in pairs[:]:
+        #Le dict pair contient 3 clef: tokenized_sentence, tokenized_question et prediction
         key = pair['tokenized_sentence']
         res[key] = [pair['prediction'].encode('utf-8')]
 
         # gts
         gts[key].append(pair['tokenized_question'].encode('utf-8'))
-
+        #print("\n")
+        #print("TEXTE:{}\nREPONSE:{}\n".format(key.split("[sep]")[0], key.split("[sep]")[1]))
+        #print("PREDICTION:",res[key])
+        #print("\nSQUAD QUESTION:",gts[key])
+        #print("\n")
+        #print([key for key in pair.keys()])
+        #print("GTS:{} et RES: {}".format(gts[key], res[key]))
     QGEval = QGEvalCap(gts, res)
     return QGEval.evaluate()
 
