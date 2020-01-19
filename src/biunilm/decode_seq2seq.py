@@ -116,22 +116,23 @@ def main():
                         help="Do not predict the tokens during decoding.")
 
     args = parser.parse_args()
-
+    
     if args.need_score_traces and args.beam_size <= 1:
         raise ValueError(
             "Score trace is only available for beam search with beam size > 1.")
     if args.max_tgt_length >= args.max_seq_length - 2:
         raise ValueError("Maximum tgt length exceeds max seq length - 2.")
 
-    device = torch.device(
-        "cuda" if torch.cuda.is_available() else "cpu")
-    n_gpu = torch.cuda.device_count()
-
+    #device = torch.device(
+        #"cuda" if torch.cuda.is_available() else "cpu")
+    #n_gpu = torch.cuda.device_count()
+    n_gpu = 0
+    device = torch.device("cpu")
     random.seed(args.seed)
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
-    if n_gpu > 0:
-        torch.cuda.manual_seed_all(args.seed)
+    #if n_gpu > 0:
+        #torch.cuda.manual_seed_all(args.seed)
 
     tokenizer = BertTokenizer.from_pretrained(
         args.bert_model, do_lower_case=args.do_lower_case)
@@ -170,30 +171,33 @@ def main():
 
     forbid_ignore_set = _get_token_id_set(args.forbid_ignore_word)
     not_predict_set = _get_token_id_set(args.not_predict_token)
-    print(args.model_recover_path)
+    print(len(glob.glob(args.model_recover_path.strip())))
+    print('\n')
     for model_recover_path in glob.glob(args.model_recover_path.strip()):
         logger.info("***** Recover model: %s *****", model_recover_path)
         model_recover = torch.load(model_recover_path, map_location="cpu")
         model = BertForSeq2SeqDecoder.from_pretrained(args.bert_model, state_dict=model_recover, num_labels=cls_num_labels, num_rel=pair_num_relation, type_vocab_size=type_vocab_size, task_idx=3, mask_word_id=mask_word_id, search_beam_size=args.beam_size,
                                                       length_penalty=args.length_penalty, eos_id=eos_word_ids, sos_id=sos_word_id, forbid_duplicate_ngrams=args.forbid_duplicate_ngrams, forbid_ignore_set=forbid_ignore_set, not_predict_set=not_predict_set, ngram_size=args.ngram_size, min_len=args.min_len, mode=args.mode, max_position_embeddings=args.max_seq_length, ffn_type=args.ffn_type, num_qkv=args.num_qkv, seg_emb=args.seg_emb, pos_shift=args.pos_shift)
         del model_recover
-
         if args.fp16:
             model.half()
         model.to(device)
         if n_gpu > 1:
             model = torch.nn.DataParallel(model)
 
-        torch.cuda.empty_cache()
+        #torch.cuda.empty_cache()
         model.eval()
         next_i = 0
         max_src_length = args.max_seq_length - 2 - args.max_tgt_length
 
         with open(args.input_file, encoding="utf-8") as fin:
             input_lines = [x.strip() for x in fin.readlines()]
+            print("READING INPUT...")
+            print(input_lines)
             if args.subset > 0:
                 logger.info("Decoding subset: %d", args.subset)
                 input_lines = input_lines[:args.subset]
+        print("Finished input file reading")
         data_tokenizer = WhitespaceTokenizer() if args.tokenized_input else tokenizer
         input_lines = [data_tokenizer.tokenize(
             x)[:max_src_length] for x in input_lines]
@@ -241,9 +245,12 @@ def main():
                             score_trace_list[buf_id[i]] = {
                                 'scores': traces['scores'][i], 'wids': traces['wids'][i], 'ptrs': traces['ptrs'][i]}
                 pbar.update(1)
+        print("BOUGE")
         if args.output_file:
             fn_out = args.output_file
-        else:
+            print("\n IN \n")
+        else: 
+            print("\n OUT \n")
             fn_out = model_recover_path+'.'+args.split
         with open(fn_out, "w", encoding="utf-8") as fout:
             for l in output_lines:
