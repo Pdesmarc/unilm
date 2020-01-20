@@ -192,8 +192,6 @@ def main():
 
         with open(args.input_file, encoding="utf-8") as fin:
             input_lines = [x.strip() for x in fin.readlines()]
-            print("READING INPUT...")
-            print(input_lines)
             if args.subset > 0:
                 logger.info("Decoding subset: %d", args.subset)
                 input_lines = input_lines[:args.subset]
