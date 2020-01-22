@@ -195,7 +195,6 @@ def main():
             if args.subset > 0:
                 logger.info("Decoding subset: %d", args.subset)
                 input_lines = input_lines[:args.subset]
-        print("Finished input file reading")
         data_tokenizer = WhitespaceTokenizer() if args.tokenized_input else tokenizer
         input_lines = [data_tokenizer.tokenize(
             x)[:max_src_length] for x in input_lines]
@@ -243,12 +242,9 @@ def main():
                             score_trace_list[buf_id[i]] = {
                                 'scores': traces['scores'][i], 'wids': traces['wids'][i], 'ptrs': traces['ptrs'][i]}
                 pbar.update(1)
-        print("BOUGE")
         if args.output_file:
             fn_out = args.output_file
-            print("\n IN \n")
         else: 
-            print("\n OUT \n")
             fn_out = model_recover_path+'.'+args.split
         with open(fn_out, "w", encoding="utf-8") as fout:
             for l in output_lines:
