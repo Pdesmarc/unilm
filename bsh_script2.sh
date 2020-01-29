@@ -15,6 +15,6 @@ python src/biunilm/decode_seq2seq.py --bert_model bert-large-cased --new_segment
 
 # --tokenized_input = Whether the text is tokenized with WordPiece
 # run evaluation using our tokenized data as reference
-#python src/qg/eval_on_unilm_tokenized_ref.py --out_file src/qg/output/qg.test.output.txt
+python src/qg/eval_on_unilm_tokenized_ref.py --out_file src/qg/output/qg.test.output.txt
 # run evaluation using tokenized data of Du et al. (2017) as reference
 #python src/qg/eval.py --out_file src/qg/output/qg.test.output.txt

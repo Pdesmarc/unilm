@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python
 __author__ = 'xinya'
 
 import os, sys
@@ -7,6 +7,7 @@ import os, sys
 #sys.path.insert(0,"/home/etienne/Documents/unilm/src/NLGEval/nlgeval/pycocoevalcap/meteor")
 #print("Le work dir de eval_on.py est:",os.getcwd())
 #sys.path.insert(0,"/home/etienne/Documents/unilm/src")
+#sys.path.remove("/home/etienne/Documents/unilm/src")
 #print("On a ca en path:",sys.path)
 
 from NLGEval.nlgeval.pycocoevalcap.cider.cider import Cider
